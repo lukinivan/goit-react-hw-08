@@ -3,7 +3,10 @@ import { PrivateRoute } from "./routes/PrivateRoute";
 import { PublicRoute } from "./routes/PublicRoute";
 import { Layout } from "./components";
 import { easyLazy } from "./helpers/easyLazy";
-import { Suspense } from "react";
+import { useEffect } from "react";
+import { selectIsRefreshing } from "./redux/auth/selectors";
+import { useDispatch, useSelector } from "react-redux";
+import { refreshThunk } from "./redux/auth/operations";
 
 const Home = easyLazy("HomePage");
 const Login = easyLazy("LoginPage");
@@ -11,20 +14,27 @@ const Contacts = easyLazy("ContactsPage");
 const Registration = easyLazy("RegistrationPage");
 
 const App = () => {
-  return (
-    <Suspense fallback={<div>Loading....</div>}>
+  const dispatch = useDispatch();
+  const isRefreshing = useSelector(selectIsRefreshing);
+
+  useEffect(() => {
+    dispatch(refreshThunk());
+  }, [dispatch]);
+
+  return isRefreshing ? (
+    <b>Refreshing user...</b>
+  ) : (
+    <Layout>
       <Routes>
+        <Route path="/" element={<Home />} />
         <Route
-          path="/"
+          path="/register"
           element={
-            <PrivateRoute>
-              <Layout />
-            </PrivateRoute>
+            <PublicRoute>
+              <Registration />
+            </PublicRoute>
           }
-        >
-          <Route index element={<Home />} />
-          <Route path="contacts" element={<Contacts />} />
-        </Route>
+        />
         <Route
           path="/login"
           element={
@@ -34,15 +44,15 @@ const App = () => {
           }
         />
         <Route
-          path="/register"
+          path="/contacts"
           element={
-            <PublicRoute>
-              <Registration />
-            </PublicRoute>
+            <PrivateRoute>
+              <Contacts />
+            </PrivateRoute>
           }
         />
       </Routes>
-    </Suspense>
+    </Layout>
   );
 };
 

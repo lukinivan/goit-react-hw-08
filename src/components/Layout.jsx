@@ -1,14 +1,11 @@
-import { Outlet } from "react-router-dom";
-import { Header } from "./Header/Header";
 import { Suspense } from "react";
+import { AppBar } from "./AppBar/AppBar";
 
-export const Layout = () => {
+export const Layout = ({ children }) => {
   return (
-    <div>
-      <Header />
-      {/* <Suspense> */}
-      <Outlet />
-      {/* </Suspense> */}
+    <div style={{ maxWidth: 960, margin: "0 auto", padding: "0 16px" }}>
+      <AppBar />
+      <Suspense fallback={null}>{children}</Suspense>
     </div>
   );
 };
