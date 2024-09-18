@@ -15,8 +15,6 @@ const styles = {
 export default function HomePage() {
   return (
     <>
-      <h1>Home</h1>
-
       <div style={styles.container}>
         <h1 style={styles.title}>Contact manager welcome page </h1>
       </div>
